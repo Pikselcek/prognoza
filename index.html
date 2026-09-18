@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pregled slik</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #111;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            touch-action: pan-y; /* Prepreči vodoravno pomikanje strani, dovoli navpično */
+        }
+
+        #image-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+        }
+
+        #image-container:active {
+            cursor: grabbing;
+        }
+
+        #viewer {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            user-select: none;
+            -webkit-user-drag: none;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .counter {
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-variant-numeric: tabular-nums;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .nav-hint {
+            position: absolute;
+            bottom: 16px;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Območji za klik na levi in desni strani zaslona (za namizne naprave) */
+        .click-zone {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 30%;
+            z-index: 5;
+            /* background: rgba(255,0,0,0.1); /* odkomentirajte za testiranje območij */
+        }
+        #left-zone { left: 0; }
+        #right-zone { right: 0; }
+
+    </style>
+</head>
+<body>
+
+    <div class="counter" id="counter">1 / 73</div>
+    
+    <div id="image-container">
+        <img id="viewer" src="" alt="Pregled slike">
+        <div id="left-zone" class="click-zone" title="Prejšnja slika"></div>
+        <div id="right-zone" class="click-zone" title="Naslednja slika"></div>
+    </div>
+
+    <div class="nav-hint">Podrsajte levo/desno, uporabite puščice na tipkovnici ali kliknite na stran zaslona</div>
+
+    <script>
+        const baseUrl = "https://prognoza.hr/nauticari/uv10_sj_jadran_";
+        const minIndex = 0;
+        const maxIndex = 72;
+        let currentIndex = 0;
+
+        const viewer = document.getElementById('viewer');
+        const counter = document.getElementById('counter');
+        const leftZone = document.getElementById('left-zone');
+        const rightZone = document.getElementById('right-zone');
+
+        // Funkcija za generiranje URL-ja z vodilno ničlo (npr. 00, 01, ..., 72)
+        function getImageUrl(index) {
+            const paddedIndex = String(index).padStart(2, '0');
+            return `${baseUrl}${paddedIndex}.png`;
+        }
+
+        // Posodobitev prikaza slike
+        function updateImage() {
+            viewer.style.opacity = '0.5';
+            const newSrc = getImageUrl(currentIndex);
+            
+            const tempImg = new Image();
+            tempImg.onload = () => {
+                viewer.src = newSrc;
+                viewer.style.opacity = '1';
+            };
+            tempImg.onerror = () => {
+                console.warn(`Slika ni najdena: ${newSrc}`);
+                viewer.src = newSrc; // Prikaži standardno ikono napake brskalnika
+                viewer.style.opacity = '1';
+            };
+            tempImg.src = newSrc;
+
+            counter.textContent = `${currentIndex + 1} / ${maxIndex + 1}`;
+            preloadImage(currentIndex - 1);
+            preloadImage(currentIndex + 1);
+        }
+
+        // Prednalaganje sosednjih slik za nemoteno izkušnjo
+        function preloadImage(index) {
+            if (index >= minIndex && index <= maxIndex) {
+                const img = new Image();
+                img.src = getImageUrl(index);
+            }
+        }
+
+        function nextImage() {
+            if (currentIndex < maxIndex) {
+                currentIndex++;
+                updateImage();
+            }
+        }
+
+        function prevImage() {
+            if (currentIndex > minIndex) {
+                currentIndex--;
+                updateImage();
+            }
+        }
+
+        // --- Navigacija z miško / klikom ---
+        leftZone.addEventListener('click', prevImage);
+        rightZone.addEventListener('click', nextImage);
+
+        // --- Navigacija s tipkovnico ---
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevImage();
+            if (e.key === 'ArrowRight') nextImage();
+        });
+
+        // --- Navigacija s podrsanjem (Swipe) na dotikovnih zaslonih ---
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const swipeThreshold = 50; // Minimalna razdalja v pikslih za prepoznavo podrsanja
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextImage(); // Podrsanje v levo (prst se premakne v levo) = naslednja slika
+                } else {
+                    prevImage(); // Podrsanje v desno = prejšnja slika
+                }
+            }
+        }
+
+        // Inicializacija
+        updateImage();
+    </script>
+</body>
+</html>

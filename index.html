@@ -20,20 +20,19 @@
             flex-direction: column;
         }
 
-        /* --- Tabs (Bottom Navigation) --- */
+        /* --- Tabs (Top Navigation) --- */
         .tabs {
             display: flex;
             background: linear-gradient(to bottom, #e8f0f7, #dce8f2);
-            border-top: 2px solid #b8c9d9;
+            border-bottom: 2px solid #b8c9d9;
             flex-shrink: 0;
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
-            z-index: 1000;
-            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            z-index: 100;
         }
 
         .tab {
             flex: 1;
-            padding: 16px 8px;
+            padding: 14px 8px;
             background: none;
             border: none;
             color: #5a6f82;
@@ -41,15 +40,15 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            border-top: 3px solid transparent;
+            border-bottom: 3px solid transparent;
             text-align: center;
-            min-height: 60px;
+            min-height: 52px;
         }
 
         .tab:hover { color: #2c4a63; background-color: rgba(255,255,255,0.3); }
         .tab.active { 
             color: #2c4a63; 
-            border-top-color: #4a90c8; 
+            border-bottom-color: #4a90c8; 
             background-color: rgba(255,255,255,0.6);
         }
 
@@ -79,8 +78,7 @@
             background-color: #fff;
             border-bottom: 2px solid #e0e0e0;
             overflow: hidden;
-            position: relative;
-            min-height: 150px;
+            min-height: 0;
         }
 
         .radar-section img {
@@ -97,7 +95,7 @@
             justify-content: center;
             background-color: #fff;
             overflow: hidden;
-            min-height: 150px;
+            min-height: 0;
         }
 
         #image-container {
@@ -175,40 +173,23 @@
             color: #888;
             z-index: 1;
         }
-
-        /* --- Mobile Optimizations --- */
-        @media (max-width: 768px) {
-            .tab {
-                font-size: 13px;
-                padding: 14px 4px;
-                min-height: 56px;
-            }
-            
-            .tabs {
-                border-top-width: 3px;
-            }
-        }
-
-        @media (max-height: 600px) {
-            .tab {
-                padding: 12px 4px;
-                min-height: 50px;
-                font-size: 12px;
-            }
-        }
     </style>
 </head>
 <body>
 
+    <!-- Tabs (Top Navigation) -->
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab(0)">Radar + UV</button>
+        <button class="tab" onclick="switchTab(1)">Windy Radar</button>
+        <button class="tab" onclick="switchTab(2)">Meteo.hr 7 dni</button>
+    </div>
+
     <!-- Tab 1: Radar Animation + UV Viewer -->
     <div class="tab-content active" id="tab-0">
         <div class="combined-container">
-            <!-- Radar Animation (Top) -->
             <div class="radar-section">
                 <img src="https://vrijeme.hr/anim_kompozit.gif" alt="Radar animacija">
             </div>
-            
-            <!-- UV Image Viewer (Bottom) -->
             <div class="uv-section">
                 <div class="counter" id="counter">1 / 73</div>
                 <div id="image-container">
@@ -221,15 +202,10 @@
         </div>
     </div>
 
-    <!-- Tab 2: Windy Radar (Fullscreen) -->
+    <!-- Tab 2: Windy Radar -->
     <div class="tab-content" id="tab-1">
         <div class="iframe-container">
-            <iframe 
-                id="windy-iframe"
-                src="about:blank" 
-                allow="geolocation"
-                loading="lazy">
-            </iframe>
+            <iframe id="windy-iframe" src="about:blank" allow="geolocation" loading="lazy"></iframe>
             <div class="iframe-notice">Nalaganje Windy radarja...</div>
         </div>
     </div>
@@ -242,15 +218,7 @@
         </div>
     </div>
 
-    <!-- Tabs (Bottom Navigation) -->
-    <div class="tabs">
-        <button class="tab active" onclick="switchTab(0)">Radar + UV</button>
-        <button class="tab" onclick="switchTab(1)">Windy Radar</button>
-        <button class="tab" onclick="switchTab(2)">Meteo.hr 7 dni</button>
-    </div>
-
     <script>
-        // ================= TAB SWITCHING =================
         function switchTab(tabIndex) {
             document.querySelectorAll('.tab').forEach((tab, i) => {
                 tab.classList.toggle('active', i === tabIndex);
@@ -258,8 +226,6 @@
             document.querySelectorAll('.tab-content').forEach((content, i) => {
                 content.classList.toggle('active', i === tabIndex);
             });
-            
-            // Lazy load iframes
             if (tabIndex === 1) loadWindyIframe();
             if (tabIndex === 2) loadMeteoIframe();
         }
@@ -278,7 +244,7 @@
             }
         }
 
-        // ================= UV IMAGE VIEWER (Tab 1) =================
+        // UV Image Viewer
         const uvBaseUrl = "https://prognoza.hr/nauticari/uv10_sj_jadran_";
         const uvMinIndex = 0;
         const uvMaxIndex = 72;
@@ -299,7 +265,6 @@
             tempImg.onerror = () => { uvViewer.src = newSrc; uvViewer.style.opacity = '1'; };
             tempImg.src = newSrc;
             uvCounter.textContent = `${uvCurrentIndex + 1} / ${uvMaxIndex + 1}`;
-            
             if (uvCurrentIndex > uvMinIndex) preloadUvImage(uvCurrentIndex - 1);
             if (uvCurrentIndex < uvMaxIndex) preloadUvImage(uvCurrentIndex + 1);
         }
@@ -316,7 +281,6 @@
             if (uvCurrentIndex < uvMaxIndex) { uvCurrentIndex++; updateUvImage(); }
         });
 
-        // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (document.getElementById('tab-0').classList.contains('active')) {
                 if (e.key === 'ArrowLeft' && uvCurrentIndex > uvMinIndex) { uvCurrentIndex--; updateUvImage(); }
@@ -324,7 +288,6 @@
             }
         });
 
-        // Touch swipe
         let uvTouchStartX = 0;
         document.getElementById('image-container').addEventListener('touchstart', (e) => {
             uvTouchStartX = e.changedTouches[0].screenX;
@@ -337,7 +300,6 @@
             }
         }, { passive: true });
 
-        // ================= INITIALIZATION =================
         updateUvImage();
     </script>
 </body>

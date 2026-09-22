@@ -2,7 +2,7 @@
 <html lang="sl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Vremenski pregled</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -17,36 +17,43 @@
             overflow: hidden;
         }
 
-        /* --- Tabs --- */
+        /* --- Tabs (Bottom Navigation) --- */
         .tabs {
             display: flex;
-            background-color: #fff;
-            border-bottom: 2px solid #e0e0e0;
+            background: linear-gradient(to bottom, #e8f0f7, #dce8f2);
+            border-top: 2px solid #b8c9d9;
             flex-shrink: 0;
+            order: 2;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
         }
 
         .tab {
             flex: 1;
-            padding: 12px 10px;
+            padding: 14px 10px;
             background: none;
             border: none;
-            color: #666;
+            color: #5a6f82;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            border-bottom: 3px solid transparent;
+            border-top: 3px solid transparent;
             text-align: center;
         }
 
-        .tab:hover { color: #222; background-color: #f9f9f9; }
-        .tab.active { color: #222; border-bottom-color: #4CAF50; background-color: #f9f9f9; }
+        .tab:hover { color: #2c4a63; background-color: rgba(255,255,255,0.3); }
+        .tab.active { 
+            color: #2c4a63; 
+            border-top-color: #4a90c8; 
+            background-color: rgba(255,255,255,0.5);
+        }
 
         /* --- Tab Content --- */
         .tab-content {
             display: none;
             flex: 1;
             overflow: hidden;
+            order: 1;
         }
         .tab-content.active { display: flex; flex-direction: column; }
 
@@ -65,8 +72,8 @@
             justify-content: center;
             background-color: #fff;
             border-bottom: 2px solid #e0e0e0;
-            min-height: 200px;
             overflow: hidden;
+            position: relative;
         }
 
         .radar-section img {
@@ -93,6 +100,7 @@
             align-items: center;
             justify-content: center;
             cursor: grab;
+            touch-action: pinch-zoom;
         }
         #image-container:active { cursor: grabbing; }
         #viewer {
@@ -102,6 +110,7 @@
             user-select: none;
             -webkit-user-drag: none;
             transition: opacity 0.2s ease-in-out;
+            touch-action: pinch-zoom;
         }
         .counter {
             position: absolute;
@@ -162,13 +171,6 @@
 </head>
 <body>
 
-    <!-- Tabs -->
-    <div class="tabs">
-        <button class="tab active" onclick="switchTab(0)">Radar + UV</button>
-        <button class="tab" onclick="switchTab(1)">Windy Radar</button>
-        <button class="tab" onclick="switchTab(2)">Meteo.hr 7 dni</button>
-    </div>
-
     <!-- Tab 1: Radar Animation + UV Viewer -->
     <div class="tab-content active" id="tab-0">
         <div class="combined-container">
@@ -185,7 +187,7 @@
                     <div id="left-zone" class="click-zone" title="Prejšnja slika"></div>
                     <div id="right-zone" class="click-zone" title="Naslednja slika"></div>
                 </div>
-                <div class="nav-hint">Podrsajte, uporabite puščice ali kliknite na rob zaslona</div>
+                <div class="nav-hint">Podrsajte, povečajte s prsti ali kliknite na rob zaslona</div>
             </div>
         </div>
     </div>
@@ -209,6 +211,13 @@
             <iframe id="meteo-iframe" src="about:blank" allowfullscreen loading="lazy"></iframe>
             <div class="iframe-notice">Nalaganje Meteo.hr napovedi...</div>
         </div>
+    </div>
+
+    <!-- Tabs (Bottom Navigation) -->
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab(0)">Radar + UV</button>
+        <button class="tab" onclick="switchTab(1)">Windy Radar</button>
+        <button class="tab" onclick="switchTab(2)">Meteo.hr 7 dni</button>
     </div>
 
     <script>

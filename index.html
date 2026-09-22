@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Vremenski pregled</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            background-color: #f5f5f5;
+            color: #222;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Tabs (Top Navigation) --- */
+        .tabs {
+            display: flex;
+            background: linear-gradient(to bottom, #e8f0f7, #dce8f2);
+            border-bottom: 2px solid #b8c9d9;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            z-index: 100;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 14px 8px;
+            background: none;
+            border: none;
+            color: #5a6f82;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            text-align: center;
+            min-height: 52px;
+        }
+
+        .tab:hover { color: #2c4a63; background-color: rgba(255,255,255,0.3); }
+        .tab.active { 
+            color: #2c4a63; 
+            border-bottom-color: #4a90c8; 
+            background-color: rgba(255,255,255,0.6);
+        }
+
+        /* --- Tab Content --- */
+        .tab-content {
+            display: none;
+            flex: 1;
+            overflow: hidden;
+            min-height: 0;
+        }
+        .tab-content.active { display: flex; flex-direction: column; }
+
+        /* --- Tab 1: Radar + UV Layout --- */
+        .combined-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .radar-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            border-bottom: 2px solid #e0e0e0;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .radar-section img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .uv-section {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        #image-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            touch-action: pinch-zoom;
+        }
+        #image-container:active { cursor: grabbing; }
+        #viewer {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            user-select: none;
+            -webkit-user-drag: none;
+            transition: opacity 0.2s ease-in-out;
+            touch-action: pinch-zoom;
+        }
+        .counter {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-variant-numeric: tabular-nums;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .click-zone {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 30%;
+            z-index: 5;
+        }
+        #left-zone { left: 0; }
+        #right-zone { right: 0; }
+
+        /* --- Fullscreen Iframe (Windy & Meteo) --- */
+        .iframe-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background-color: #fff;
+        }
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .iframe-notice {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #888;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Tabs (Top Navigation) -->
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab(0)">Radar + UV</button>
+        <button class="tab" onclick="switchTab(1)">Windy Radar</button>
+        <button class="tab" onclick="switchTab(2)">Meteo.hr 7 dni</button>
+    </div>
+
+    <!-- Tab 1: Radar Animation + UV Viewer -->
+    <div class="tab-content active" id="tab-0">
+        <div class="combined-container">
+            <div class="radar-section">
+                <img src="https://vrijeme.hr/anim_kompozit.gif" alt="Radar animacija">
+            </div>
+            <div class="uv-section">
+                <div class="counter" id="counter">1 / 73</div>
+                <div id="image-container">
+                    <img id="viewer" src="" alt="UV indeks">
+                    <div id="left-zone" class="click-zone" title="Prejšnja slika"></div>
+                    <div id="right-zone" class="click-zone" title="Naslednja slika"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 2: Windy Radar -->
+    <div class="tab-content" id="tab-1">
+        <div class="iframe-container">
+            <iframe id="windy-iframe" src="about:blank" allow="geolocation" loading="lazy"></iframe>
+            <div class="iframe-notice">Nalaganje Windy radarja...</div>
+        </div>
+    </div>
+
+    <!-- Tab 3: Meteo.hr -->
+    <div class="tab-content" id="tab-2">
+        <div class="iframe-container">
+            <iframe id="meteo-iframe" src="about:blank" allowfullscreen loading="lazy"></iframe>
+            <div class="iframe-notice">Nalaganje Meteo.hr napovedi...</div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabIndex) {
+            document.querySelectorAll('.tab').forEach((tab, i) => {
+                tab.classList.toggle('active', i === tabIndex);
+            });
+            document.querySelectorAll('.tab-content').forEach((content, i) => {
+                content.classList.toggle('active', i === tabIndex);
+            });
+            if (tabIndex === 1) loadWindyIframe();
+            if (tabIndex === 2) loadMeteoIframe();
+        }
+
+        function loadWindyIframe() {
+            const iframe = document.getElementById('windy-iframe');
+            if (iframe.src === 'about:blank') {
+                iframe.src = 'https://embed.windy.com/embed2.html?lat=45.683&lon=14.570&detailLat=45.683&detailLon=14.570&width=100%25&height=100%25&zoom=8&level=surface&overlay=radar&product=radar&calendar=now';
+            }
+        }
+
+        function loadMeteoIframe() {
+            const iframe = document.getElementById('meteo-iframe');
+            if (iframe.src === 'about:blank') {
+                iframe.src = 'https://meteo.hr/prognoze.php?Code=MOST+KRK&section=prognoze_model&param=7d';
+            }
+        }
+
+        // UV Image Viewer
+        const uvBaseUrl = "https://prognoza.hr/nauticari/uv10_sj_jadran_";
+        const uvMinIndex = 0;
+        const uvMaxIndex = 72;
+        let uvCurrentIndex = 0;
+
+        const uvViewer = document.getElementById('viewer');
+        const uvCounter = document.getElementById('counter');
+
+        function getUvImageUrl(index) {
+            return `${uvBaseUrl}${String(index).padStart(2, '0')}.png`;
+        }
+
+        function updateUvImage() {
+            uvViewer.style.opacity = '0.5';
+            const newSrc = getUvImageUrl(uvCurrentIndex);
+            const tempImg = new Image();
+            tempImg.onload = () => { uvViewer.src = newSrc; uvViewer.style.opacity = '1'; };
+            tempImg.onerror = () => { uvViewer.src = newSrc; uvViewer.style.opacity = '1'; };
+            tempImg.src = newSrc;
+            uvCounter.textContent = `${uvCurrentIndex + 1} / ${uvMaxIndex + 1}`;
+            if (uvCurrentIndex > uvMinIndex) preloadUvImage(uvCurrentIndex - 1);
+            if (uvCurrentIndex < uvMaxIndex) preloadUvImage(uvCurrentIndex + 1);
+        }
+
+        function preloadUvImage(index) {
+            const img = new Image();
+            img.src = getUvImageUrl(index);
+        }
+
+        document.getElementById('left-zone').addEventListener('click', () => {
+            if (uvCurrentIndex > uvMinIndex) { uvCurrentIndex--; updateUvImage(); }
+        });
+        document.getElementById('right-zone').addEventListener('click', () => {
+            if (uvCurrentIndex < uvMaxIndex) { uvCurrentIndex++; updateUvImage(); }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('tab-0').classList.contains('active')) {
+                if (e.key === 'ArrowLeft' && uvCurrentIndex > uvMinIndex) { uvCurrentIndex--; updateUvImage(); }
+                if (e.key === 'ArrowRight' && uvCurrentIndex < uvMaxIndex) { uvCurrentIndex++; updateUvImage(); }
+            }
+        });
+
+        let uvTouchStartX = 0;
+        document.getElementById('image-container').addEventListener('touchstart', (e) => {
+            uvTouchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        document.getElementById('image-container').addEventListener('touchend', (e) => {
+            const diff = uvTouchStartX - e.changedTouches[0].screenX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0 && uvCurrentIndex < uvMaxIndex) { uvCurrentIndex++; updateUvImage(); }
+                else if (diff < 0 && uvCurrentIndex > uvMinIndex) { uvCurrentIndex--; updateUvImage(); }
+            }
+        }, { passive: true });
+
+        updateUvImage();
+    </script>
+</body>
+</html>

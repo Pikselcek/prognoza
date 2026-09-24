@@ -2,93 +2,118 @@
 <html lang="sl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LPP Live Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LPP Live</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f0f2f5;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container { max-width: 500px; margin: 0 auto; }
-        h1 { text-align: center; margin-bottom: 20px; color: #1e3c72; font-size: 24px; }
-        .station-box {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-        .station-header {
-            background: #1e3c72;
-            color: white;
-            padding: 15px;
-            font-size: 20px;
-            font-weight: 700;
+            background: #f4f6f8;
+            height: 100vh;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            overflow: hidden; /* Prepreči dvojne drsnike */
         }
-        .live-dot {
-            height: 10px; width: 10px;
-            background: #10b981;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-            animation: pulse 1.5s infinite;
+
+        .tabs {
+            display: flex;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.4; }
-            100% { opacity: 1; }
-        }
-        iframe {
-            width: 100%;
-            height: 450px;
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px 8px;
             border: none;
+            background: transparent;
+            font-size: 16px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            background: #f8fafc;
+            color: #1e3c72;
+        }
+
+        .tab-btn.active {
+            color: #1e3c72;
+            background: #ffffff;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #1e3c72;
+        }
+
+        .tab-content {
+            display: none;
+            flex: 1;
+            height: 100%;
+        }
+
+        .tab-content.active {
             display: block;
         }
-        .info-text {
-            text-align: center;
-            font-size: 13px;
-            color: #666;
-            margin-top: 10px;
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚌 Spremljanje avtobusov LPP</h1>
-        
-        <div class="station-box">
-            <div class="station-header">
-                <span><span class="live-dot"></span>Letališka</span>
-                <span style="font-size: 14px; opacity: 0.8;">204041</span>
-            </div>
-            <iframe src="https://ljbus.cc/prihodi-avtobusov-lpp/letaliska-204041" loading="lazy" title="Letališka"></iframe>
-        </div>
 
-        <div class="station-box">
-            <div class="station-header">
-                <span><span class="live-dot"></span>Privoz</span>
-                <span style="font-size: 14px; opacity: 0.8;">602112</span>
-            </div>
-            <iframe src="https://ljbus.cc/prihodi-avtobusov-lpp/privoz-602112" loading="lazy" title="Privoz"></iframe>
-        </div>
-
-        <div class="station-box">
-            <div class="station-header">
-                <span><span class="live-dot"></span>Livada</span>
-                <span style="font-size: 14px; opacity: 0.8;">603092</span>
-            </div>
-            <iframe src="https://ljbus.cc/prihodi-avtobusov-lpp/livada-603092" loading="lazy" title="Livada"></iframe>
-        </div>
-
-        <div class="info-text">
-            Podatki se na izvorni strani posodabljajo samodejno v realnem času.
-        </div>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event, 'letaliska')">Letališka</button>
+        <button class="tab-btn" onclick="openTab(event, 'privoz')">Privoz</button>
+        <button class="tab-btn" onclick="openTab(event, 'livada')">Livada</button>
     </div>
+
+    <div id="letaliska" class="tab-content active">
+        <iframe src="https://ljbus.cc/prihodi-avtobusov-lpp/letaliska-204041" loading="lazy" title="Letališka"></iframe>
+    </div>
+
+    <div id="privoz" class="tab-content">
+        <iframe src="https://ljbus.cc/prihodi-avtobusov-lpp/privoz-602112" loading="lazy" title="Privoz"></iframe>
+    </div>
+
+    <div id="livada" class="tab-content">
+        <iframe src="https://ljbus.cc/prihodi-avtobusov-lpp/livada-603092" loading="lazy" title="Livada"></iframe>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            // Skrij vse vsebine
+            const contents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < contents.length; i++) {
+                contents[i].classList.remove("active");
+            }
+
+            // Odstrani 'active' razred z vseh gumbov
+            const buttons = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove("active");
+            }
+
+            // Prikaži izbrano vsebino in označi gumb
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+    </script>
+
 </body>
 </html>

@@ -2,91 +2,93 @@
 <html lang="sl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Časovnica: Podpeč ↔ Letališka 29b</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: #f4f6f8;
-    color: #1a1a1a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f0f4f8;
+    color: #1e293b;
     padding: 12px;
     min-height: 100vh;
   }
   .header {
-    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
     color: white;
-    padding: 16px;
-    border-radius: 12px;
-    margin-bottom: 12px;
+    padding: 18px 16px;
+    border-radius: 14px;
+    margin-bottom: 14px;
     text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
   }
-  .header h1 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-  .header p { font-size: 12px; opacity: 0.9; }
+  .header h1 { font-size: 19px; font-weight: 700; margin-bottom: 4px; }
+  .header p { font-size: 13px; opacity: 0.9; font-weight: 500; }
 
   .tabs {
     display: flex;
     background: white;
     border-radius: 12px;
     padding: 4px;
-    margin-bottom: 12px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
   .tab {
     flex: 1;
     padding: 12px;
     text-align: center;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     color: #64748b;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.25s ease;
     border: none;
     background: transparent;
   }
   .tab.active {
     background: #2563eb;
     color: white;
-    box-shadow: 0 2px 6px rgba(37,99,235,0.3);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
   }
 
   .info-card {
     background: white;
     border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 12px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
   .info-card h3 {
     font-size: 13px;
     color: #2563eb;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    font-weight: 700;
   }
   .info-row {
     display: flex;
     justify-content: space-between;
-    padding: 6px 0;
-    font-size: 13px;
+    padding: 7px 0;
+    font-size: 14px;
     border-bottom: 1px solid #f1f5f9;
   }
   .info-row:last-child { border-bottom: none; }
   .info-row span:first-child { color: #64748b; }
-  .info-row span:last-child { font-weight: 600; color: #1a1a1a; }
+  .info-row span:last-child { font-weight: 600; color: #0f172a; }
 
-  .content { display: none; }
+  .content { display: none; animation: fadeIn 0.3s ease; }
   .content.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
   .connection {
     background: white;
     border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    border-left: 4px solid #2563eb;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: 5px solid #10b981;
   }
   .connection.tight { border-left-color: #f59e0b; }
 
@@ -94,18 +96,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
   .conn-route {
-    font-size: 12px;
+    font-size: 13px;
     color: #64748b;
-    font-weight: 500;
+    font-weight: 600;
   }
   .conn-badge {
-    font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 10px;
-    font-weight: 600;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 700;
   }
   .badge-ok { background: #dcfce7; color: #166534; }
   .badge-tight { background: #fef3c7; color: #92400e; }
@@ -113,40 +115,48 @@
   .timeline {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    font-size: 13px;
+    gap: 8px;
+    font-size: 14px;
   }
   .step {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
   .step-time {
-    font-weight: 700;
-    font-size: 15px;
+    font-weight: 800;
+    font-size: 16px;
     color: #1e3a8a;
-    min-width: 50px;
+    min-width: 55px;
+    font-variant-numeric: tabular-nums;
   }
   .step-dot {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    background: #2563eb;
+    background: #3b82f6;
     flex-shrink: 0;
+    position: relative;
   }
-  .step-dot.walk { background: #94a3b8; border: 2px dashed #94a3b8; width: 8px; height: 8px; }
-  .step-dot.end { background: #16a34a; }
-  .step-desc { color: #475569; flex: 1; }
-  .step-desc strong { color: #1a1a1a; }
+  .step-dot.walk { 
+    background: white; 
+    border: 2px dashed #94a3b8; 
+    width: 10px; 
+    height: 10px; 
+  }
+  .step-dot.end { background: #10b981; }
+  .step-desc { color: #475569; flex: 1; line-height: 1.4; }
+  .step-desc strong { color: #0f172a; }
 
   .footer-note {
-    background: #fef3c7;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
     border-radius: 12px;
-    padding: 12px;
-    font-size: 12px;
-    color: #78350f;
+    padding: 14px;
+    font-size: 13px;
+    color: #1e40af;
     line-height: 1.5;
-    margin-top: 12px;
+    margin-top: 16px;
   }
 </style>
 </head>
@@ -166,65 +176,78 @@
 <div id="morning" class="content active">
   <div class="info-card">
     <h3>📍 Pot v službo</h3>
-    <div class="info-row"><span>1. 19B Podpeč → Livada</span><span>~22 min</span></div>
-    <div class="info-row"><span>2. Peš Livada → Galjevica</span><span>~2 min</span></div>
-    <div class="info-row"><span>3. 27 Galjevica → Letališka</span><span>~30 min</span></div>
-    <div class="info-row"><span>Skupaj</span><span>~55–65 min</span></div>
+    <div class="info-row"><span>1. 19B Podpeč → Livada</span><span>18 min</span></div>
+    <div class="info-row"><span>2. Peš Livada → Galjevica</span><span>2 min</span></div>
+    <div class="info-row"><span>3. 27 Galjevica → Letališka</span><span>35 min</span></div>
   </div>
 
   <div class="connection">
     <div class="conn-header">
       <span class="conn-route">Povezava 1</span>
-      <span class="conn-badge badge-ok">✅ 10 min rezerve</span>
+      <span class="conn-badge badge-ok">✅ 12 min rezerve</span>
     </div>
     <div class="timeline">
-      <div class="step"><span class="step-time">06:19</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod iz Podpeči</span></div>
-      <div class="step"><span class="step-time">~06:41</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Livado</strong></span></div>
-      <div class="step"><span class="step-time">~06:43</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Galjevice</strong></span></div>
-      <div class="step"><span class="step-time">06:51</span><span class="step-dot"></span><span class="step-desc"><strong>27</strong> odhod proti Letališki</span></div>
-      <div class="step"><span class="step-time">~07:21</span><span class="step-dot end"></span><span class="step-desc">prihod na <strong>Letališko</strong></span></div>
+      <div class="step"><span class="step-time">06:02</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod iz Podpeči</span></div>
+      <div class="step"><span class="step-time">06:23</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Livado</strong></span></div>
+      <div class="step"><span class="step-time">06:25</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Galjevice</strong></span></div>
+      <div class="step"><span class="step-time">06:37</span><span class="step-dot"></span><span class="step-desc"><strong>27</strong> odhod proti Letališki</span></div>
+      <div class="step"><span class="step-time">07:12</span><span class="step-dot end"></span><span class="step-desc">prihod na <strong>Letališko</strong></span></div>
     </div>
   </div>
 
-  <div class="connection tight">
+  <div class="connection">
     <div class="conn-header">
       <span class="conn-route">Povezava 2</span>
-      <span class="conn-badge badge-tight">⚠️ 4 min rezerve</span>
+      <span class="conn-badge badge-ok">✅ 8 min rezerve</span>
     </div>
     <div class="timeline">
-      <div class="step"><span class="step-time">06:39</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod iz Podpeči</span></div>
-      <div class="step"><span class="step-time">~07:01</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Livado</strong></span></div>
-      <div class="step"><span class="step-time">~07:03</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Galjevice</strong></span></div>
+      <div class="step"><span class="step-time">06:32</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod iz Podpeči</span></div>
+      <div class="step"><span class="step-time">06:55</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Livado</strong></span></div>
+      <div class="step"><span class="step-time">06:57</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Galjevice</strong></span></div>
       <div class="step"><span class="step-time">07:05</span><span class="step-dot"></span><span class="step-desc"><strong>27</strong> odhod proti Letališki</span></div>
-      <div class="step"><span class="step-time">~07:35</span><span class="step-dot end"></span><span class="step-desc">prihod na <strong>Letališko</strong></span></div>
+      <div class="step"><span class="step-time">07:41</span><span class="step-dot end"></span><span class="step-desc">prihod na <strong>Letališko</strong></span></div>
     </div>
   </div>
 
   <div class="connection">
     <div class="conn-header">
       <span class="conn-route">Povezava 3</span>
-      <span class="conn-badge badge-ok">✅ 10 min rezerve</span>
+      <span class="conn-badge badge-ok">✅ 11 min rezerve</span>
     </div>
     <div class="timeline">
-      <div class="step"><span class="step-time">06:58</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod iz Podpeči</span></div>
-      <div class="step"><span class="step-time">~07:20</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Livado</strong></span></div>
-      <div class="step"><span class="step-time">~07:22</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Galjevice</strong></span></div>
+      <div class="step"><span class="step-time">06:54</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod iz Podpeči</span></div>
+      <div class="step"><span class="step-time">07:17</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Livado</strong></span></div>
+      <div class="step"><span class="step-time">07:19</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Galjevice</strong></span></div>
       <div class="step"><span class="step-time">07:30</span><span class="step-dot"></span><span class="step-desc"><strong>27</strong> odhod proti Letališki</span></div>
-      <div class="step"><span class="step-time">~08:00</span><span class="step-dot end"></span><span class="step-desc">prihod na <strong>Letališko</strong></span></div>
+      <div class="step"><span class="step-time">08:07</span><span class="step-dot end"></span><span class="step-desc">prihod na <strong>Letališko</strong></span></div>
+    </div>
+  </div>
+
+  <div class="connection tight">
+    <div class="conn-header">
+      <span class="conn-route">Povezava 4</span>
+      <span class="conn-badge badge-tight">⚡ 5 min rezerve</span>
+    </div>
+    <div class="timeline">
+      <div class="step"><span class="step-time">07:14</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod iz Podpeči</span></div>
+      <div class="step"><span class="step-time">07:37</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Livado</strong></span></div>
+      <div class="step"><span class="step-time">07:39</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Galjevice</strong></span></div>
+      <div class="step"><span class="step-time">07:44</span><span class="step-dot"></span><span class="step-desc"><strong>27</strong> odhod proti Letališki</span></div>
+      <div class="step"><span class="step-time">08:23</span><span class="step-dot end"></span><span class="step-desc">prihod na <strong>Letališko</strong></span></div>
     </div>
   </div>
 
   <div class="connection">
     <div class="conn-header">
-      <span class="conn-route">Povezava 4</span>
+      <span class="conn-route">Povezava 5</span>
       <span class="conn-badge badge-ok">✅ 12 min rezerve</span>
     </div>
     <div class="timeline">
-      <div class="step"><span class="step-time">07:25</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod iz Podpeči</span></div>
-      <div class="step"><span class="step-time">~07:47</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Livado</strong></span></div>
-      <div class="step"><span class="step-time">~07:49</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Galjevice</strong></span></div>
-      <div class="step"><span class="step-time">07:59</span><span class="step-dot"></span><span class="step-desc"><strong>27</strong> odhod proti Letališki</span></div>
-      <div class="step"><span class="step-time">~08:29</span><span class="step-dot end"></span><span class="step-desc">prihod na <strong>Letališko</strong></span></div>
+      <div class="step"><span class="step-time">07:38</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod iz Podpeči</span></div>
+      <div class="step"><span class="step-time">08:00</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Livado</strong></span></div>
+      <div class="step"><span class="step-time">08:02</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Galjevice</strong></span></div>
+      <div class="step"><span class="step-time">08:14</span><span class="step-dot"></span><span class="step-desc"><strong>27</strong> odhod proti Letališki</span></div>
+      <div class="step"><span class="step-time">08:50</span><span class="step-dot end"></span><span class="step-desc">prihod na <strong>Letališko</strong></span></div>
     </div>
   </div>
 </div>
@@ -233,57 +256,84 @@
 <div id="afternoon" class="content">
   <div class="info-card">
     <h3>📍 Pot domov</h3>
-    <div class="info-row"><span>1. 27 Letališka → Galjevica</span><span>~35 min</span></div>
-    <div class="info-row"><span>2. Peš Galjevica → Livada</span><span>~2 min</span></div>
-    <div class="info-row"><span>3. 19B Livada → Podpeč</span><span>~22 min</span></div>
-    <div class="info-row"><span>Skupaj</span><span>~60–65 min</span></div>
+    <div class="info-row"><span>1. 27 Letališka → Galjevica</span><span>53 min</span></div>
+    <div class="info-row"><span>2. Peš Galjevica → Livada</span><span>2 min</span></div>
+    <div class="info-row"><span>3. 19B Livada → Podpeč</span><span>18 min</span></div>
   </div>
 
   <div class="connection">
     <div class="conn-header">
       <span class="conn-route">Povezava 1</span>
-      <span class="conn-badge badge-ok">✅ 10 min rezerve</span>
+      <span class="conn-badge badge-ok">✅ 9 min rezerve</span>
     </div>
     <div class="timeline">
-      <div class="step"><span class="step-time">~15:25</span><span class="step-dot"></span><span class="step-desc"><strong>27</strong> odhod iz Letališke</span></div>
-      <div class="step"><span class="step-time">~16:00</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Galjevico</strong></span></div>
-      <div class="step"><span class="step-time">~16:02</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Livade</strong></span></div>
-      <div class="step"><span class="step-time">16:10</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod proti Podpeči</span></div>
-      <div class="step"><span class="step-time">~16:32</span><span class="step-dot end"></span><span class="step-desc">prihod v <strong>Podpeč</strong></span></div>
+      <div class="step"><span class="step-time">15:34</span><span class="step-dot"></span><span class="step-desc"><strong>27</strong> odhod iz Letališke</span></div>
+      <div class="step"><span class="step-time">16:35</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Galjevico</strong></span></div>
+      <div class="step"><span class="step-time">16:37</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Livade</strong></span></div>
+      <div class="step"><span class="step-time">16:46</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod proti Podpeči</span></div>
+      <div class="step"><span class="step-time">17:06</span><span class="step-dot end"></span><span class="step-desc">prihod v <strong>Podpeč</strong></span></div>
     </div>
   </div>
 
   <div class="connection">
     <div class="conn-header">
       <span class="conn-route">Povezava 2</span>
-      <span class="conn-badge badge-ok">✅ 11 min rezerve</span>
+      <span class="conn-badge badge-ok">✅ 12 min rezerve</span>
     </div>
     <div class="timeline">
-      <div class="step"><span class="step-time">~16:00</span><span class="step-dot"></span><span class="step-desc"><strong>27</strong> odhod iz Letališke</span></div>
-      <div class="step"><span class="step-time">~16:35</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Galjevico</strong></span></div>
-      <div class="step"><span class="step-time">~16:37</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Livade</strong></span></div>
-      <div class="step"><span class="step-time">16:46</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod proti Podpeči</span></div>
-      <div class="step"><span class="step-time">~17:08</span><span class="step-dot end"></span><span class="step-desc">prihod v <strong>Podpeč</strong></span></div>
+      <div class="step"><span class="step-time">16:12</span><span class="step-dot"></span><span class="step-desc"><strong>27</strong> odhod iz Letališke</span></div>
+      <div class="step"><span class="step-time">17:09</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Galjevico</strong></span></div>
+      <div class="step"><span class="step-time">17:11</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Livade</strong></span></div>
+      <div class="step"><span class="step-time">17:23</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod proti Podpeči</span></div>
+      <div class="step"><span class="step-time">17:43</span><span class="step-dot end"></span><span class="step-desc">prihod v <strong>Podpeč</strong></span></div>
     </div>
   </div>
 
   <div class="connection">
     <div class="conn-header">
       <span class="conn-route">Povezava 3</span>
-      <span class="conn-badge badge-ok">✅ 13 min rezerve</span>
+      <span class="conn-badge badge-ok">✅ 20 min rezerve</span>
     </div>
     <div class="timeline">
-      <div class="step"><span class="step-time">~16:35</span><span class="step-dot"></span><span class="step-desc"><strong>27</strong> odhod iz Letališke</span></div>
-      <div class="step"><span class="step-time">~17:10</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Galjevico</strong></span></div>
-      <div class="step"><span class="step-time">~17:12</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Livade</strong></span></div>
-      <div class="step"><span class="step-time">17:23</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod proti Podpeči</span></div>
-      <div class="step"><span class="step-time">~17:45</span><span class="step-dot end"></span><span class="step-desc">prihod v <strong>Podpeč</strong></span></div>
+      <div class="step"><span class="step-time">16:48</span><span class="step-dot"></span><span class="step-desc"><strong>27</strong> odhod iz Letališke</span></div>
+      <div class="step"><span class="step-time">17:43</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Galjevico</strong></span></div>
+      <div class="step"><span class="step-time">17:45</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Livade</strong></span></div>
+      <div class="step"><span class="step-time">18:05</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod proti Podpeči</span></div>
+      <div class="step"><span class="step-time">18:24</span><span class="step-dot end"></span><span class="step-desc">prihod v <strong>Podpeč</strong></span></div>
+    </div>
+  </div>
+
+  <div class="connection tight">
+    <div class="conn-header">
+      <span class="conn-route">Povezava 4</span>
+      <span class="conn-badge badge-tight">⚡ 5 min rezerve</span>
+    </div>
+    <div class="timeline">
+      <div class="step"><span class="step-time">17:06</span><span class="step-dot"></span><span class="step-desc"><strong>27</strong> odhod iz Letališke</span></div>
+      <div class="step"><span class="step-time">17:58</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Galjevico</strong></span></div>
+      <div class="step"><span class="step-time">18:00</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Livade</strong></span></div>
+      <div class="step"><span class="step-time">18:05</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod proti Podpeči</span></div>
+      <div class="step"><span class="step-time">18:24</span><span class="step-dot end"></span><span class="step-desc">prihod v <strong>Podpeč</strong></span></div>
+    </div>
+  </div>
+
+  <div class="connection">
+    <div class="conn-header">
+      <span class="conn-route">Povezava 5</span>
+      <span class="conn-badge badge-ok">✅ 19 min rezerve</span>
+    </div>
+    <div class="timeline">
+      <div class="step"><span class="step-time">17:42</span><span class="step-dot"></span><span class="step-desc"><strong>27</strong> odhod iz Letališke</span></div>
+      <div class="step"><span class="step-time">18:38</span><span class="step-dot"></span><span class="step-desc">prihod na <strong>Galjevico</strong></span></div>
+      <div class="step"><span class="step-time">18:40</span><span class="step-dot walk"></span><span class="step-desc">prehod do <strong>Livade</strong></span></div>
+      <div class="step"><span class="step-time">18:59</span><span class="step-dot"></span><span class="step-desc"><strong>19B</strong> odhod proti Podpeči</span></div>
+      <div class="step"><span class="step-time">19:18</span><span class="step-dot end"></span><span class="step-desc">prihod v <strong>Podpeč</strong></span></div>
     </div>
   </div>
 </div>
 
 <div class="footer-note">
-  💡 <strong>Nasvet:</strong> Časi so iz uradnega voznega reda LPP za delavnik. V konicah (7:00–8:00, 15:30–16:30) lahko pride do zamud ±3–5 min. Za ⚠️ tesne povezave preveri prihod v živo na <strong>ljbus.cc</strong>.
+  💡 <strong>Nasvet:</strong> Vsi časi so izračunani iz tvojih točnih voznih redov. Pri povezavah z oznako ⚡ (5 min rezerve) priporočam spremljanje prihoda v živo na <strong>ljbus.cc</strong>, da zagotoviš pravočasen prestop.
 </div>
 
 <script>

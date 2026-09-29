@@ -78,6 +78,37 @@
   .info-row span:first-child { color: #64748b; }
   .info-row span:last-child { font-weight: 600; color: #0f172a; }
 
+  /* --- LIVE BUTTONS ROW --- */
+  .live-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .live-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: white;
+    color: #1e3a8a;
+    border: 2px solid #3b82f6;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.15);
+  }
+  .live-btn:active {
+    background: #eff6ff;
+    transform: scale(0.98);
+  }
+  .live-btn .icon {
+    font-size: 18px;
+  }
+
   .content { display: none; animation: fadeIn 0.3s ease; }
   .content.active { display: block; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -99,65 +130,77 @@
     align-items: center;
     margin-bottom: 12px;
   }
-  .conn-route {
-    font-size: 13px;
-    color: #64748b;
-    font-weight: 600;
-  }
-  .conn-badge {
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-weight: 700;
-  }
+  .conn-route { font-size: 13px; color: #64748b; font-weight: 600; }
+  .conn-badge { font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: 700; }
   .badge-ok { background: #dcfce7; color: #166534; }
   .badge-tight { background: #fef3c7; color: #92400e; }
   .badge-gold { background: #f3e8ff; color: #6b21a8; }
 
-  .timeline {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    font-size: 14px;
-  }
-  .step {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .step-time {
-    font-weight: 800;
-    font-size: 16px;
-    color: #1e3a8a;
-    min-width: 55px;
-    font-variant-numeric: tabular-nums;
-  }
-  .step-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #3b82f6;
-    flex-shrink: 0;
-  }
-  .step-dot.walk { 
-    background: white; 
-    border: 2px dashed #94a3b8; 
-    width: 10px; 
-    height: 10px; 
-  }
+  .timeline { display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+  .step { display: flex; align-items: center; gap: 12px; }
+  .step-time { font-weight: 800; font-size: 16px; color: #1e3a8a; min-width: 55px; font-variant-numeric: tabular-nums; }
+  .step-dot { width: 12px; height: 12px; border-radius: 50%; background: #3b82f6; flex-shrink: 0; }
+  .step-dot.walk { background: white; border: 2px dashed #94a3b8; width: 10px; height: 10px; }
   .step-dot.end { background: #10b981; }
   .step-desc { color: #475569; flex: 1; line-height: 1.4; }
   .step-desc strong { color: #0f172a; }
 
+  /* --- LIGHTBOX / MODAL STYLES --- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+  }
+  .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease; }
+  
+  .modal-content {
+    background: white;
+    width: 100%;
+    max-width: 450px;
+    height: 85vh;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .modal-title { font-weight: 700; font-size: 15px; color: #1e293b; }
+  .modal-close {
+    background: #ef4444; color: white; border: none;
+    width: 32px; height: 32px; border-radius: 50%;
+    font-size: 18px; cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .modal-close:active { background: #dc2626; }
+  
+  .modal-iframe {
+    flex: 1; width: 100%; border: none; background: #f8fafc;
+  }
+  .modal-fallback {
+    padding: 12px; text-align: center; font-size: 13px; color: #64748b;
+    background: #fef2f2; border-top: 1px solid #fee2e2;
+  }
+  .modal-fallback a { color: #2563eb; font-weight: 600; text-decoration: none; }
+
   .footer-note {
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    border-radius: 12px;
-    padding: 14px;
-    font-size: 13px;
-    color: #1e40af;
-    line-height: 1.5;
-    margin-top: 16px;
+    background: #eff6ff; border: 1px solid #bfdbfe;
+    border-radius: 12px; padding: 14px; font-size: 13px;
+    color: #1e40af; line-height: 1.5; margin-top: 16px;
   }
 </style>
 </head>
@@ -170,7 +213,7 @@
 
 <div class="tabs">
   <button class="tab active" onclick="showTab('morning', this)">☀️ Jutro</button>
-  <button class="tab" onclick="showTab('afternoon', this)">🌙 Popoldne</button>
+  <button class="tab" onclick="showTab('afternoon', this)"> Popoldne</button>
 </div>
 
 <!-- JUTRO -->
@@ -180,6 +223,19 @@
     <div class="info-row"><span>1. 19B Podpeč → Livada</span><span>~18-21 min</span></div>
     <div class="info-row"><span>2. Peš Livada → Galjevica</span><span>2 min</span></div>
     <div class="info-row"><span>3. 27 Galjevica → Letališka</span><span>~35 min</span></div>
+  </div>
+
+  <!-- LIVE GUMBI ZA JUTRO -->
+  <div class="live-buttons">
+    <button class="live-btn" onclick="openModal('https://ljbus.cc/prihodi-avtobusov-lpp/podpec-745052', 'Live: Podpeč (19B odhod')">
+      <span class="icon">🚌</span> Prihod 19B v Podpeč
+    </button>
+    <button class="live-btn" onclick="openModal('https://ljbus.cc/prihodi-avtobusov-lpp/livada-603092', 'Live: Livada (19B prihod')">
+      <span class="icon">📍</span> Prihod 19B na Livado
+    </button>
+    <button class="live-btn" onclick="openModal('https://ljbus.cc/prihodi-avtobusov-lpp/galjevica-603161', 'Live: Galjevica (27 prihod')">
+      <span class="icon">🚏</span> Prihod 27 na Galjevico
+    </button>
   </div>
 
   <div class="connection">
@@ -248,6 +304,19 @@
     <div class="info-row"><span>3. 19B Livada → Podpeč</span><span>20 min</span></div>
   </div>
 
+  <!-- LIVE GUMBI ZA POPOOLDNE -->
+  <div class="live-buttons">
+    <button class="live-btn" onclick="openModal('https://ljbus.cc/prihodi-avtobusov-lpp/letaliska-204041', 'Live: Letališka (27 odhod')">
+      <span class="icon">🚌</span> Prihod 27 v Letališko
+    </button>
+    <button class="live-btn" onclick="openModal('https://ljbus.cc/prihodi-avtobusov-lpp/galjevica-603162', 'Live: Galjevica (27 prihod')">
+      <span class="icon">📍</span> Prihod 27 na Galjevico
+    </button>
+    <button class="live-btn" onclick="openModal('https://ljbus.cc/prihodi-avtobusov-lpp/livada-603092', 'Live: Livada (19B odhod')">
+      <span class="icon">🚏</span> Prihod 19B na Livado
+    </button>
+  </div>
+
   <div class="connection gold">
     <div class="conn-header">
       <span class="conn-route">🏆 Najhitrejša povezava</span>
@@ -306,7 +375,22 @@
 </div>
 
 <div class="footer-note">
-  💡 <strong>Nasvet:</strong> Vsi časi so strogo izračunani iz tvojih voznih redov (Letališka + 50 min = Galjevica). Pri povezavah z oznako ⚡ (3–4 min rezerve) je ključno, da si na prehodu med postajama že ob prihodu 27-ice. Spremljaj prihod v živo na <strong>ljbus.cc</strong>!
+  💡 <strong>Nasvet:</strong> Uporabi live gumbe na vrhu za preverjanje realnih prihodov avtobusov. Pri povezavah z oznako ⚡ (3–5 min rezerve) je ključno, da si na prehodu med postajama že ob prihodu avtobusa.
+</div>
+
+<!-- LIGHTBOX MODAL -->
+<div id="liveModal" class="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Live pogled</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <iframe id="modalIframe" class="modal-iframe" src="" loading="lazy"></iframe>
+    <div class="modal-fallback">
+      Če se vsebina ne naloži (varnostna omejitev strani), <br>
+      <a id="fallbackLink" href="#" target="_blank">klikni tukaj za odprtje v novem zavihku</a>.
+    </div>
+  </div>
 </div>
 
 <script>
@@ -315,6 +399,26 @@
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     btn.classList.add('active');
+  }
+
+  function openModal(url, title) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalIframe').src = url;
+    document.getElementById('fallbackLink').href = url;
+    document.getElementById('liveModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('liveModal').classList.remove('active');
+    document.getElementById('modalIframe').src = '';
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOutside(event) {
+    if (event.target === document.getElementById('liveModal')) {
+      closeModal();
+    }
   }
 </script>
 
